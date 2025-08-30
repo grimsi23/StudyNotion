@@ -6,21 +6,22 @@ const profileRoutes = require("./routes/profile");
 const courseRoutes = require("./routes/Course");
 const paymentRoutes = require("./routes/Payments");
 const contactUsRoute = require("./routes/Contact");
+const uploadRoutes = require("./routes/upload"); // ✅ separate upload routes
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { cloudinaryConnect } = require("./config/cloudinary");
-const multer = require("multer");
-const fs = require("fs");
 const dotenv = require("dotenv");
 
 // Loading environment variables from .env file
 dotenv.config();
+
 // Setting up port number
 const PORT = process.env.PORT || 4000;
+
 // Connecting to database
 database.connect();
- 
+
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
@@ -30,23 +31,6 @@ app.use(
 		credentials: true,
 	})
 );
-// Configure multer (temporary upload storage in /tmp)
-const upload = multer({ dest: "/tmp" });
-
-// File upload route (upload → cloudinary → delete local file)
-app.post("/upload", upload.single("file"), async (req, res) => {
-  try {
-    const cloudinary = require("cloudinary").v2;
-    const result = await cloudinary.uploader.upload(req.file.path);
-
-    // Delete local file after upload
-    fs.unlinkSync(req.file.path);
-
-    res.json({ url: result.secure_url });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // Connecting to cloudinary
 cloudinaryConnect();
@@ -57,6 +41,7 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/reach", contactUsRoute);
+app.use("/api/v1/upload", uploadRoutes); // ✅ handled in routes/upload.js
 
 // Testing the server
 app.get("/", (req, res) => {
@@ -71,4 +56,3 @@ app.listen(PORT, () => {
 	console.log(`App is listening at ${PORT}`);
 });
 
-// End of code.
