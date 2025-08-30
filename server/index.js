@@ -10,7 +10,8 @@ const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { cloudinaryConnect } = require("./config/cloudinary");
-const fileUpload = require("express-fileupload");
+const multer = require("multer");
+const fs = require("fs");
 const dotenv = require("dotenv");
 
 // Loading environment variables from .env file
@@ -25,17 +26,27 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
 	cors({
-		origin: ["https://study-notion-alpha-sooty.vercel.app", 
-			"http://localhost:3000" ],
+		origin: "https://study-notion-alpha-sooty.vercel.app", 
 		credentials: true,
 	})
 );
-app.use(
-	fileUpload({
-		useTempFiles: true,
-		tempFileDir: "/tmp/",
-	})
-);
+// Configure multer (temporary upload storage in /tmp)
+const upload = multer({ dest: "/tmp" });
+
+// File upload route (upload → cloudinary → delete local file)
+app.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+    const cloudinary = require("cloudinary").v2;
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    // Delete local file after upload
+    fs.unlinkSync(req.file.path);
+
+    res.json({ url: result.secure_url });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Connecting to cloudinary
 cloudinaryConnect();
