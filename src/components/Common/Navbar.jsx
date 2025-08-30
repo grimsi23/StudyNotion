@@ -40,20 +40,25 @@ function Navbar() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
+    const fetchSublinks = async () => {
       try {
         const res = await apiConnector("GET", categories.CATEGORIES_API)
-        const cleanData = res.data.data.map((cat) => ({
+
+        const allCats = Array.isArray(res?.data?.data) ? res.data.data : []
+
+        const cleanData = allCats.map((cat) => ({
           ...cat,
           courses: Array.isArray(cat.courses) ? cat.courses : [],
         }))
+
         setSubLinks(cleanData)
       } catch (error) {
-        console.log("Could not fetch Categories.", error)
+        console.error("Could not fetch Categories.", error)
+        setSubLinks([]) // fallback
       }
-      setLoading(false)
-    })()
+    }
+
+    fetchSublinks()
   }, [])
 
   // console.log("sub links", subLinks)
