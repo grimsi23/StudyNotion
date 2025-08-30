@@ -61,7 +61,7 @@ function Navbar() {
     fetchSublinks()
   }, [])
 
-  // console.log("sub links", subLinks)
+  // ("sub links", subLinks)
 
   const matchRoute = (route) => {
     return matchPath({ path: route }, location.pathname)

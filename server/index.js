@@ -6,7 +6,8 @@ const profileRoutes = require("./routes/profile");
 const courseRoutes = require("./routes/Course");
 const paymentRoutes = require("./routes/Payments");
 const contactUsRoute = require("./routes/Contact");
-const uploadRoutes = require("./routes/upload"); // ✅ separate upload routes
+const uploadRoutes = require("./routes/upload"); 
+const fs = require("fs");
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -34,6 +35,7 @@ app.use(
 
 // Connecting to cloudinary
 cloudinaryConnect();
+fs.unlinkSync(localFilePath);  // delete from /tmp
 
 // Setting up routes
 app.use("/api/v1/auth", userRoutes);
@@ -53,6 +55,6 @@ app.get("/", (req, res) => {
 
 // Listening to the server
 app.listen(PORT, () => {
-	console.log(`App is listening at ${PORT}`);
+	(`App is listening at ${PORT}`);
 });
 
