@@ -13,20 +13,19 @@ export default function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState(null)
 
   useEffect(() => {
-    ;(async () => {
-      try {
-        const res = await getUserEnrolledCourses(token) // Getting all the published and the drafted courses
+  (async () => {
+    try {
+      const res = await getUserEnrolledCourses(token) // API call
 
-        // Filtering the published course out
-        const filterPublishCourse = res.filter((ele) => ele.status !== "Draft")
-        
+      const filterPublishCourse = res.filter((ele) => ele.status !== "Draft")
 
-        setEnrolledCourses(filterPublishCourse)
-      } catch (error) {
-        ("Could not fetch enrolled courses.")
-      }
-    })()
-  }, [])
+      setEnrolledCourses(filterPublishCourse)
+    } catch (error) {
+      console.error("Failed to fetch enrolled courses:", error.message)
+    }
+  })()
+}, [])
+
 
   return (
     <>

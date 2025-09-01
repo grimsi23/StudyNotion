@@ -15,7 +15,6 @@ exports.createCategory = async (req, res) => {
       name: name,
       description: description,
     })
-    (CategorysDetails)
     return res.status(200).json({
       success: true,
       message: "Categorys Created Successfully",
@@ -47,8 +46,6 @@ exports.showAllCategories = async (req, res) => {
 exports.categoryPageDetails = async (req, res) => {
   try {
     const { categoryId } = req.body;
-
-    // Get courses for the selected category
     const selectedCategory = await Category.findById(categoryId)
       .populate({
         path: "courses",
@@ -83,7 +80,6 @@ exports.categoryPageDetails = async (req, res) => {
         .exec();
     }
 
-    // Get top-selling courses across all categories
     const allCategories = await Category.find()
       .populate({
         path: "courses",

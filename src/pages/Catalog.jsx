@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
-
-// import CourseCard from "../components/Catalog/CourseCard"
-// import CourseSlider from "../components/Catalog/CourseSlider"
 import Footer from "../components/Common/Footer"
 import Course_Card from "../components/core/Catalog/Course_Card"
 import Course_Slider from "../components/core/Catalog/Course_Slider"
@@ -28,7 +25,7 @@ function Catalog() {
         )[0]._id
         setCategoryId(category_id)
       } catch (error) {
-        ("Could not fetch Categories.", error)
+        console.error("Could not fetch Categories.", error)
       }
     })()
   }, [catalogName])
@@ -39,7 +36,7 @@ function Catalog() {
           const res = await getCatalogPageData(categoryId)
           setCatalogPageData(res)
         } catch (error) {
-          (error)
+          console.error(error)
         }
       })()
     }

@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const cloudinary = require("cloudinary").v2;
-
+const fs = require("fs");
 // Multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -31,6 +31,7 @@ router.post("/", upload.single("file"), async (req, res) => {
       folder: "uploads",
     });
 
+    fs.unlinkSync(req.file.path);
     res.json({ url: result.secure_url });
   } catch (error) {
     console.error("Upload Error:", error);

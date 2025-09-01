@@ -25,7 +25,7 @@ export default function UpdatePassword() {
     try {
       await changePassword(token, data)
     } catch (error) {
-      ("ERROR MESSAGE - ", error.message)
+      console.error("ERROR MESSAGE - ", error.message)
     }
   }
 

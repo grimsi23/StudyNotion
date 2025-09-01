@@ -26,7 +26,6 @@ const ContactUsForm = () => {
       // ("Email Res - ", res)
       setLoading(false)
     } catch (error) {
-      ("ERROR MESSAGE - ", error.message)
       setLoading(false)
     }
   }

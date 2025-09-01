@@ -95,7 +95,6 @@ exports.deleteSection = async (req, res) => {
       },
     })
     const section = await Section.findById(sectionId)
-    (sectionId, courseId)
     if (!section) {
       return res.status(404).json({
         success: false,
@@ -123,7 +122,6 @@ exports.deleteSection = async (req, res) => {
       data: course,
     })
   } catch (error) {
-    console.error("Error deleting section:", error)
     res.status(500).json({
       success: false,
       message: "Internal server error",

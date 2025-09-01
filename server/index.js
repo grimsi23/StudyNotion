@@ -1,4 +1,3 @@
-// Importing necessary modules and packages
 const express = require("express");
 const app = express();
 const userRoutes = require("./routes/user");
@@ -13,29 +12,29 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { cloudinaryConnect } = require("./config/cloudinary");
 const dotenv = require("dotenv");
-
 // Loading environment variables from .env file
 dotenv.config();
-
 // Setting up port number
 const PORT = process.env.PORT || 4000;
-
 // Connecting to database
 database.connect();
 
+const corsOptions = {
+  origin: [
+    "https://study-notion-alpha-sooty.vercel.app", 
+    "http://localhost:3000"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+};
+
+app.use(cors(corsOptions));
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-	cors({
-		origin: "https://study-notion-alpha-sooty.vercel.app", 
-		credentials: true,
-	})
-);
-
 // Connecting to cloudinary
 cloudinaryConnect();
-fs.unlinkSync(localFilePath);  // delete from /tmp
 
 // Setting up routes
 app.use("/api/v1/auth", userRoutes);
@@ -43,8 +42,7 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/reach", contactUsRoute);
-app.use("/api/v1/upload", uploadRoutes); // ✅ handled in routes/upload.js
-
+app.use("/api/v1/upload", uploadRoutes); 
 // Testing the server
 app.get("/", (req, res) => {
 	return res.json({
@@ -52,9 +50,8 @@ app.get("/", (req, res) => {
 		message: "Your server is up and running ...",
 	});
 });
-
 // Listening to the server
 app.listen(PORT, () => {
-	(`App is listening at ${PORT}`);
+	console.log(`App is listening at ${PORT}`);
 });
 

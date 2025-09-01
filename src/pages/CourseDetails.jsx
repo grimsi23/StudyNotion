@@ -4,7 +4,6 @@ import { HiOutlineGlobeAlt } from "react-icons/hi"
 import { ReactMarkdown } from "react-markdown/lib/react-markdown"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
-
 import ConfirmationModal from "../components/Common/ConfirmationModal"
 import Footer from "../components/Common/Footer"
 import RatingStars from "../components/Common/RatingStars"
@@ -24,41 +23,27 @@ function CourseDetails() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  // Getting courseId from url parameter
   const { courseId } = useParams()
-  // (`course id: ${courseId}`)
-
-  // Declear a state to save the course details
   const [response, setResponse] = useState(null)
   const [confirmationModal, setConfirmationModal] = useState(null)
   useEffect(() => {
-    // Calling fetchCourseDetails fucntion to fetch the details
     ;(async () => {
       try {
         const res = await fetchCourseDetails(courseId)
-        // ("course details res: ", res)
         setResponse(res)
       } catch (error) {
-        ("Could not fetch Course Details")
+        console.error("Could not fetch Course Details")
       }
     })()
   }, [courseId])
-
-  // ("response: ", response)
-
-  // Calculating Avg Review count
   const [avgReviewCount, setAvgReviewCount] = useState(0)
   useEffect(() => {
     const count = GetAvgRating(response?.data?.courseDetails.ratingAndReviews)
     setAvgReviewCount(count)
   }, [response])
-  // ("avgReviewCount: ", avgReviewCount)
 
-  // // Collapse all
-  // const [collapse, setCollapse] = useState("")
   const [isActive, setIsActive] = useState(Array(0))
   const handleActive = (id) => {
-    // ("called", id)
     setIsActive(
       !isActive.includes(id)
         ? isActive.concat([id])
@@ -66,7 +51,6 @@ function CourseDetails() {
     )
   }
 
-  // Total number of lectures
   const [totalNoOfLectures, setTotalNoOfLectures] = useState(0)
   useEffect(() => {
     let lectures = 0
@@ -117,7 +101,6 @@ function CourseDetails() {
   }
 
   if (paymentLoading) {
-    // ("payment loading")
     return (
       <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
         <div className="spinner"></div>
