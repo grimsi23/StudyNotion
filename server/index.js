@@ -18,21 +18,26 @@ dotenv.config();
 const PORT = process.env.PORT || 4000;
 // Connecting to database
 database.connect();
-
-const corsOptions = {
-  origin: [
-    "https://study-notion-alpha-sooty.vercel.app", 
-    "http://localhost:3000"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-};
-
-app.use(cors(corsOptions));
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://study-notion-alpha-sooty.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 // Connecting to cloudinary
 cloudinaryConnect();
 
@@ -45,6 +50,7 @@ app.use("/api/v1/reach", contactUsRoute);
 app.use("/api/v1/upload", uploadRoutes); 
 // Testing the server
 app.get("/", (req, res) => {
+	res.send("Server is running");
 	return res.json({
 		success: true,
 		message: "Your server is up and running ...",
