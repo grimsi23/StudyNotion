@@ -19,25 +19,19 @@ const PORT = process.env.PORT || 4000;
 // Connecting to database
 database.connect();
 // Middlewares
-app.use(express.json());
-app.use(cookieParser());
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://study-notion-alpha-sooty.vercel.app",
-];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(express.json({ limit: '10mb'}));
+app.use(express.urlencoded({
+  extended: true,
+  limit: '10mb'
+}));
+app.use(cookieParser());
+
+const corsOptions = {
+  origin: ["http://localhost:3000", "https://study-notion-alpha-sooty.vercel.app"],
+  credentials: true
+};
+app.use(cors(corsOptions));
 // Connecting to cloudinary
 cloudinaryConnect();
 
@@ -56,8 +50,21 @@ app.get("/", (req, res) => {
 		message: "Your server is up and running ...",
 	});
 });
+// Memory monitoring
+setInterval(() => {
+  const memory = process.memoryUsage();
+  console.log(`Memory - RSS: ${Math.round(memory.rss / 1024 / 1024)}MB`);
+}, 30000);
+
 // Listening to the server
 app.listen(PORT, () => {
 	console.log(`App is listening at ${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('Shutting down gracefully...');
+  await database.disconnect();
+  process.exit(0);
 });
 
