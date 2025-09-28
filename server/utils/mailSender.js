@@ -7,20 +7,18 @@ const mailSender = async (email, title, body) => {
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
-      },
-      secure: false,
+      }
     })
 
     let info = await transporter.sendMail({
-      from: `"Studynotion | CodeHelp" <${process.env.MAIL_USER}>`, // sender address
+      from: `"Studynotion" <${process.env.MAIL_USER}>`, // sender address
       to: `${email}`, // list of receivers
       subject: `${title}`, // Subject line
       html: `${body}`, // html body
     })
-    (info.response)
     return info
   } catch (error) {
-    return error.message
+    console.log(error.message);
   }
 }
 
