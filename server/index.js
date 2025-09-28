@@ -6,7 +6,6 @@ const courseRoutes = require("./routes/Course");
 const paymentRoutes = require("./routes/Payments");
 const contactUsRoute = require("./routes/Contact");
 const uploadRoutes = require("./routes/upload"); 
-const fs = require("fs");
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -21,14 +20,10 @@ database.connect();
 // Middlewares
 
 app.use(express.json({ limit: '10mb'}));
-app.use(express.urlencoded({
-  extended: true,
-  limit: '10mb'
-}));
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://study-notion-alpha-sooty.vercel.app"],
+  origin: ["http://localhost:3000"],
   credentials: true
 };
 app.use(cors(corsOptions));
@@ -44,27 +39,15 @@ app.use("/api/v1/reach", contactUsRoute);
 app.use("/api/v1/upload", uploadRoutes); 
 // Testing the server
 app.get("/", (req, res) => {
-	res.send("Server is running");
 	return res.json({
 		success: true,
 		message: "Your server is up and running ...",
 	});
 });
-// Memory monitoring
-setInterval(() => {
-  const memory = process.memoryUsage();
-  console.log(`Memory - RSS: ${Math.round(memory.rss / 1024 / 1024)}MB`);
-}, 30000);
 
 // Listening to the server
 app.listen(PORT, () => {
 	console.log(`App is listening at ${PORT}`);
 });
 
-// Graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down gracefully...');
-  await database.disconnect();
-  process.exit(0);
-});
 
