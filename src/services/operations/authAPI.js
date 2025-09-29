@@ -14,7 +14,7 @@ const {
   RESETPASSWORD_API,
 } = endpoints
 
-export function sendotp(email, navigate) {
+export function sendOtp(email, navigate) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
