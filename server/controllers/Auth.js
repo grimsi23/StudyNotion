@@ -175,25 +175,25 @@ exports.sendotp = async (req, res) => {
       })
     }
 
-    var otp = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      lowerCaseAlphabets: false,
-      specialChars: false,
-    })
-    const result = await OTP.findOne({ otp: otp })
-
-    while (result) {
+    let otp;
+    do{
       otp = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
+        lowerCaseAlphabets: false,
+        specialChars: false,
       })
-    }
+    } while (await OTP.findOne({ otp: otp })) {
+    
     const otpPayload = { email, otp }
     const otpBody = await OTP.create(otpPayload)
+    await mailSender(email, "Your OTP for StudyNotion", `<p>Your OTP is <b>${otp}</b></p>`);
+
     res.status(200).json({
       success: true,
       message: `OTP Sent Successfully`,
       otp,
     })
+  } 
   } catch (error) {
     console.error(error.message)
     return res.status(500).json({ success: false, error: error.message })
