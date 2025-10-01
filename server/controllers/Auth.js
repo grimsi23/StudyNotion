@@ -53,7 +53,6 @@ exports.signup = async (req, res) => {
     }
 
     const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1)
-    (response)
     if (response.length === 0) {
       return res.status(400).json({
         success: false,
