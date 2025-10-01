@@ -199,7 +199,7 @@ exports.sendotp = async (req, res) => {
     })
   } 
   catch (error) {
-    console.error("❌ sendotp error:", err);
+    console.error("❌ sendotp error:", error);
   return res.status(500).json({
     success: false,
     error: error.message,
