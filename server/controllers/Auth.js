@@ -3,6 +3,7 @@ const User = require("../models/User")
 const OTP = require("../models/OTP")
 const jwt = require("jsonwebtoken")
 const otpGenerator = require("otp-generator")
+const otpTemplate = require("../mail/templates/emailVerificationTemplate");
 const mailSender = require("../utils/mailSender")
 const { passwordUpdated } = require("../mail/templates/passwordUpdate")
 const Profile = require("../models/Profile")
@@ -157,36 +158,35 @@ exports.login = async (req, res) => {
     })
   }
 }
+
 exports.sendotp = async (req, res) => {
   try {
-    const { email, checkUserPresent  } = req.body
-    const existingUser  = await User.findOne({ email })
+    const { email } = req.body
+    const checkUserPresent  = await User.findOne({ email });
 
-    if (checkUserPresent && existingUser ) {
+    if (checkUserPresent) {
       return res.status(401).json({
         success: false,
         message: `User is Already Registered`,
       })
     }
-    if (!checkUserPresent && !existingUser) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found",
-      })
-    }
 
-    let otp;
-    do{
+    let otp, result;
+    do {
       otp = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
         lowerCaseAlphabets: false,
         specialChars: false,
-      })
-    } while (await OTP.findOne({ otp: otp })) {
+      });
+      result = await OTP.findOne({ otp });
+    } while (result);
+
     
     const otpPayload = { email, otp }
     const otpBody = await OTP.create(otpPayload)
-    await mailSender(email, "Your OTP for StudyNotion", `<p>Your OTP is <b>${otp}</b></p>`);
+
+    const htmlBody = otpTemplate(otp);
+    await mailSender(email, "Your OTP Code", htmlBody);
 
     res.status(200).json({
       success: true,
@@ -194,10 +194,12 @@ exports.sendotp = async (req, res) => {
       otp,
     })
   } 
-  } catch (error) {
-    console.error(error.message)
-    return res.status(500).json({ success: false, error: error.message })
-  }
+  catch (error) {
+  return res.status(500).json({
+    success: false,
+    error: error.message,
+  });
+}
 }
 
 exports.changePassword = async (req, res) => {

@@ -23,13 +23,9 @@ export function sendOtp(email, navigate) {
         email,
         checkUserPresent: true,
       })
-
-      console.log(response.data.success)
-
       if (!response.data.success) {
         throw new Error(response.data.message)
       }
-
       toast.success("OTP Sent Successfully")
       navigate("/verify-email")
     } catch (error) {
