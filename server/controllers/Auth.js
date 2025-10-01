@@ -188,8 +188,7 @@ exports.sendotp = async (req, res) => {
         upperCaseAlphabets: false,
       })
     }
-
-    
+    console.log("Before otp Body");
     const otpPayload = { email, otp }
     const otpBody = await OTP.create(otpPayload)
     console.log("OTP Body", otpBody)
