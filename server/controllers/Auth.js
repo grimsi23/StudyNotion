@@ -190,6 +190,7 @@ exports.sendotp = async (req, res) => {
     }
     console.log("Before otp Body");
     const otpPayload = { email, otp }
+    console.log("OTP Payload: ", otpPayload);
     const otpBody = await OTP.create(otpPayload)
     console.log("OTP Body", otpBody)
 
