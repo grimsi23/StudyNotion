@@ -193,13 +193,13 @@ exports.sendotp = async (req, res) => {
     console.log("✅ MailSender response:", response);
 
     res.status(200).json({
-      console.error("❌ sendotp error:", err);
       success: true,
       message: `OTP Sent Successfully`,
       otp,
     })
   } 
   catch (error) {
+    console.error("❌ sendotp error:", err);
   return res.status(500).json({
     success: false,
     error: error.message,
