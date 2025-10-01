@@ -195,8 +195,8 @@ exports.sendotp = async (req, res) => {
     console.log("OTP Body", otpBody)
 
     const htmlBody = otpTemplate(otp);
-    await mailSender(email, "Your OTP Code", htmlBody);
-    console.log("✅ MailSender response:", response);
+    const mailResponse = await mailSender(email, "Your OTP Code", htmlBody);
+    console.log("✅ MailSender response:", mailResponse );
 
     res.status(200).json({
       success: true,
