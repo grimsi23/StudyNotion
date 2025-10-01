@@ -161,7 +161,10 @@ exports.login = async (req, res) => {
 
 exports.sendotp = async (req, res) => {
   try {
+    console.log("🔥 Inside sendotp");
+    console.log("📩 Request Body:", req.body);
     const { email } = req.body
+    console.log("📧 Email received:", email);
     const checkUserPresent  = await User.findOne({ email });
 
     if (checkUserPresent) {
@@ -187,8 +190,10 @@ exports.sendotp = async (req, res) => {
 
     const htmlBody = otpTemplate(otp);
     await mailSender(email, "Your OTP Code", htmlBody);
+    console.log("✅ MailSender response:", response);
 
     res.status(200).json({
+      console.error("❌ sendotp error:", err);
       success: true,
       message: `OTP Sent Successfully`,
       otp,
